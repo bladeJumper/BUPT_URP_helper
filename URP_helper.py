@@ -1,3 +1,5 @@
+
+#北邮选课助手 version 1.0
 import requests
 import time
 from PIL import Image,ImageEnhance
