@@ -1,7 +1,7 @@
 # BUPT_URP_helper
 北邮选课助手
 
-features：
+Features：
 --------------
 
 * OCR识别验证码自动登陆
