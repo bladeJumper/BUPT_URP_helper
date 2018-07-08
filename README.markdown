@@ -13,9 +13,10 @@ Features：
 Pre-requirements
 --------------
 
-* Python 2.7
+* Python 3.*
 * pytesseract
 * PIL
+* tesseract
 
 Pre-set
 ---------------
