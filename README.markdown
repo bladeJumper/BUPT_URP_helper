@@ -12,11 +12,9 @@ Features：
 
 Pre-requirements
 --------------
-
-* Python 3.*
-* pytesseract
-* PIL
-* tesseract
+* Python 3+
+* python依赖：pytesseract, PIL
+* 非python依赖：tesseract https://github.com/tesseract-ocr/tesseract
 
 Pre-set
 ---------------
