@@ -1,7 +1,7 @@
 # BUPT_URP_helper
 北邮选课助手
 
-Features：
+Features
 --------------
 
 * OCR识别验证码自动登陆
@@ -20,3 +20,4 @@ Pre-set
 ---------------
 
 * 在URP-helper.py文件中输入你的学号和教务系统密码
+* 在教务系统下载课程信息后输入URP-helper.py
