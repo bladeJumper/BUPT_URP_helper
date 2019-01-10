@@ -10,7 +10,7 @@ Features
 * 自定义选课尝试间隔
 * 自定义选课尝试次数
 
-Pre-requirements
+Requirements
 --------------
 * Python 3+
 * python依赖：pytesseract, PIL
