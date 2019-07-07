@@ -3,7 +3,7 @@
 import requests
 import time
 from PIL import Image,ImageEnhance
-#import pytesseract
+import pytesseract
 import urllib3
 
 requests.packages.urllib3.disable_warnings()
@@ -25,15 +25,11 @@ success = [0]
 maxloop = 0
 sleeptime= 0.1
 #验证码识别
-'''
 def image_to_str(path):
     image = Image.open(path)
     image = image.convert('L')
-    sharpness =ImageEnhance.Contrast(image)
-    image = sharpness.enhance(2.0)
     vcode = pytesseract.image_to_string(image)
     return vcode
-'''
 
 #登陆教务系统的函数，登陆成功则返回cookies中"JSESSIONID"的值，失败则返回'0'
 def login():
@@ -46,10 +42,13 @@ def login():
     file = open('vcode.jpg','wb')
     file.write(valcode.content)
     file.close()
-    #vcode = image_to_str('vcode.jpg')
-    image = Image.open('vcode.jpg')
-    image.show()
-    vcode = input("VCODE:")
+    vcode = image_to_str('vcode.jpg')
+    '''
+    #手工输入验证码
+    #image = Image.open('vcode.jpg')
+    #image.show()
+    #vcode = input("VCODE:")
+    '''
     print("尝试验证码：",vcode)
     
     #组装数据体
