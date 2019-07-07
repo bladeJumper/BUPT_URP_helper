@@ -22,6 +22,13 @@ Usage:
 * 在URP-helper.py文件中输入你的学号和教务系统密码
 
 ![账号信息填写](https://github.com/XieZhuoJun/BUPT_URP_helper/blob/master/resource/%E6%89%B9%E6%B3%A8%202019-07-08%20010519.png)
+
+示例：
+<pre><code>
+#学号：2019211000 密码：12345678
+dataheader = "type=sso&zjh=2019211000&mm=12345678&v_yzm="
+</pre></code>
+
 * 在教务系统下载课程信息后输入URP-helper.py
 
 
