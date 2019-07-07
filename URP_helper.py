@@ -1,21 +1,31 @@
+# -*- coding: UTF-8 -*-
 
 import requests
 import time
 from PIL import Image,ImageEnhance
-import pytesseract
+#import pytesseract
+import urllib3
 
+requests.packages.urllib3.disable_warnings()
+requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += 'HIGH:!DH:!aNULL'
+try:
+    requests.packages.urllib3.contrib.pyopenssl.DEFAULT_SSL_CIPHER_LIST += 'HIGH:!DH:!aNULL'
+except AttributeError:
+    # no pyopenssl support used / needed / available
+    pass
 
 #登陆数据头部，在这里输入你的学号和密码，POST登陆请求时程序将自动在尾部加入验证码形成完整的POST数据
-dataheader = "type=sso&zjh=2016211287&mm=54yzwddsg&v_yzm="
+dataheader = "type=sso&zjh=********&mm=********&v_yzm="
 #教务系统主机ip
 host = "10.3.255.178"
 #选课信息
-kcid = ["3132121100_01"]
+kcid = ["3132114070_01"]
 kcty = ["2"]
 success = [0]
 maxloop = 0
 sleeptime= 0.1
 #验证码识别
+'''
 def image_to_str(path):
     image = Image.open(path)
     image = image.convert('L')
@@ -23,19 +33,23 @@ def image_to_str(path):
     image = sharpness.enhance(2.0)
     vcode = pytesseract.image_to_string(image)
     return vcode
+'''
 
 #登陆教务系统的函数，登陆成功则返回cookies中"JSESSIONID"的值，失败则返回'0'
 def login():
     
     #用GET方法访问教务系统登陆界面，获取验证码和COOKIES信息
-    valcode = requests.get('http://10.3.255.178/validateCodeAction.do?random=')
+    valcode = requests.get('https://jwxt.bupt.edu.cn/validateCodeAction.do?random=',verify=True)
     cookies = valcode.cookies
     
     #验证码的保存和识别
     file = open('vcode.jpg','wb')
     file.write(valcode.content)
     file.close()
-    vcode = image_to_str('vcode.jpg')
+    #vcode = image_to_str('vcode.jpg')
+    image = Image.open('vcode.jpg')
+    image.show()
+    vcode = input("VCODE:")
     print("尝试验证码：",vcode)
     
     #组装数据体
@@ -45,18 +59,18 @@ def login():
     headers = {"Connection":"keep-alive",
         "Content-Length":"47",
         "Cache-Control":"max-age=0",
-        "Origin":"http://10.3.255.178",
+        "Origin":"https://jwxt.bupt.edu.cn",
         "Upgrade-Insecure-Requests":"1",
         "Content-Type":"application/x-www-form-urlencoded",
         "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36",
         "Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
-        "Referer":"http://10.3.255.178/",
+        "Referer":"https://jwxt.bupt.edu.cn/",
         "Accept-Encoding":"gzip, deflate",
         "Accept-Language":"zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7,ja;q=0.6,zh-TW;q=0.5",
     }
 
     #发送登陆信息，并将返回值保存
-    response = requests.post('http://10.3.255.178/jwLoginAction.do', headers = headers, cookies = cookies, data = data)
+    response = requests.post('https://jwxt.bupt.edu.cn/jwLoginAction.do', headers = headers, cookies = cookies, data = data)
     #index = requests.get(acturl, headers = headers, cookies = cookies)
 
     #print(cookies.get("JSESSIONID"))
@@ -74,11 +88,11 @@ def jump(cookies):
         "Upgrade-Insecure-Requests":"1",
         "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36",
         "Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
-        "Referer":"http://10.3.255.178/menu/s_main.jsp",
+        "Referer":"https://jwxt.bupt.edu.cn/menu/s_menu.jsp",
         "Accept-Encoding":"gzip, deflate",
         "Accept-Language":"zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7,ja;q=0.6,zh-TW;q=0.5",
     }
-    res = requests.get('http://10.3.255.178/xkAction.do?actionType=-1', headers = headers, cookies = cookies)
+    res = requests.get('https://jwxt.bupt.edu.cn/xkAction.do?actionType=-1', headers = headers, cookies = cookies)
     #跳转成功，返回1
     chk = "课程"
     if(chk in res.text):
@@ -92,12 +106,12 @@ def coursedata(kcid,kcty,cookies):
         "Upgrade-Insecure-Requests":"1",
         "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36",
         "Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
-        "Referer":"http://10.3.255.178/xkAction.do?actionType=-1",
+        "Referer":"https://jwxt.bupt.edu.cn/xkAction.do?actionType=-1",
         "Accept-Encoding":"gzip, deflate",
         "Accept-Language":"zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7,ja;q=0.6,zh-TW;q=0.5",
     }
     page = 2
-    url = "http://10.3.255.178/xkAction.do?actionType="+kcty+"&pageNumber="+str(page)+"&oper1=ori"
+    url = "https://jwxt.bupt.edu.cn/xkAction.do?actionType="+kcty+"&pageNumber="+str(page)+"&oper1=ori"
     res = requests.get(url, headers = headers, cookies = cookies)
     '''
     #检查是否找到课程
@@ -138,7 +152,7 @@ def xk(kcid,coursetype,page,cookies):
         "Content-Type":"application/x-www-form-urlencoded",
         "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36",
         "Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
-        "Referer":"http://10.3.255.178/xkAction.do?actionType="+coursetype+"&pageNumber="+page+"&oper1=ori",
+        "Referer":"https://jwxt.bupt.edu.cn/xkAction.do?actionType="+coursetype+"&pageNumber="+page+"&oper1=ori",
         "Accept-Encoding":"gzip, deflate",
         "Accept-Language":"zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7,ja;q=0.6,zh-TW;q=0.5",
     }
@@ -146,7 +160,7 @@ def xk(kcid,coursetype,page,cookies):
         "preActionType":"2",
         "actionType":"9"}
 
-    response = requests.post('http://10.3.255.178/xkAction.do', headers = headers, cookies = cookies, data = data)
+    response = requests.post('https://jwxt.bupt.edu.cn/xkAction.do', headers = headers, cookies = cookies, data = data)
     succchk = "成功"
     nologchk = "初始化函数"
     if succchk in response.text:
@@ -183,18 +197,18 @@ def logout(cookies):
     headers = {"Connection":"keep-alive",
         "Content-Length":"47",
         "Cache-Control":"max-age=0",
-        "Origin":"http://10.3.255.178",
+        "Origin":"https://jwxt.bupt.edu.cn/",
         "Upgrade-Insecure-Requests":"1",
         "Content-Type":"application/x-www-form-urlencoded",
         "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36",
         "Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
-        "Referer":"http://10.3.255.178/menu/s_top.jsp",
+        "Referer":"https://jwxt.bupt.edu.cn/menu/s_top.jsp",
         "Accept-Encoding":"gzip, deflate",
         "Accept-Language":"zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7,ja;q=0.6,zh-TW;q=0.5",
     }
 
     data = {"loginType":"jwLogin"}
-    logout = requests.post('http://10.3.255.178/logout.do',headers = headers , cookies = cookies, data = data)
+    logout = requests.post('https://jwxt.bupt.edu.cn/logout.do',headers = headers , cookies = cookies, data = data)
     print("注销成功！")
 
 def trylogin():
@@ -205,7 +219,8 @@ def trylogin():
         print("尝试第",loopcount,"次登陆")
         try:
             jsessionid = login()
-        except:
+        except e:
+            print(e)
             loopcount = loopcount
         loopcount = loopcount + 1
         if(loopcount == 22):
