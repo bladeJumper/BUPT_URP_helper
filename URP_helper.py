@@ -156,7 +156,7 @@ def xk(kcid,coursetype,page,cookies):
         "Accept-Language":"zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7,ja;q=0.6,zh-TW;q=0.5",
     }
     data = {"kcId":kcid,
-        "preActionType":"2",
+        "preActionType":coursetype,
         "actionType":"9"}
 
     response = requests.post('https://jwxt.bupt.edu.cn/xkAction.do', headers = headers, cookies = cookies, data = data)
