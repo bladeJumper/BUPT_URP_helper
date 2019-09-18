@@ -9,6 +9,8 @@ Features
 * 挂机抢课
 * 自定义选课尝试间隔
 * 自定义选课尝试次数
+* 掉线自动重连
+* 多门课同时抢
 
 Requirements
 --------------
@@ -16,7 +18,7 @@ Requirements
 * python依赖：pytesseract, PIL
 * 非python依赖：tesseract https://github.com/tesseract-ocr/tesseract
 
-Usage:
+Usage
 ---------------
 
 * 在URP-helper.py文件中输入你的学号和教务系统密码
