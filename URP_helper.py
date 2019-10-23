@@ -4,6 +4,7 @@ import requests
 import time
 from PIL import Image,ImageEnhance
 import pytesseract
+#requests.packages.urllib3.disable_warnings()
 import urllib3
 
 requests.packages.urllib3.disable_warnings()
@@ -15,15 +16,19 @@ except AttributeError:
     pass
 
 #登陆数据头部，在这里输入你的学号和密码，POST登陆请求时程序将自动在尾部加入验证码形成完整的POST数据
-dataheader = "type=sso&zjh=********&mm=********&v_yzm="
+dataheader = "type=sso&zjh=你的学号&mm=你的密码&v_yzm="
+
 #教务系统主机ip
 host = "10.3.255.178"
 #选课信息
+#计划课程（1）、方案课程（2）、系任选课（4）、校任选课（3）
 kcid = ["3132114070_01"]
-kcty = ["2"]
+kcty = ["1"]
 success = [0]
 maxloop = 0
 sleeptime= 0.1
+
+###################################################################################################
 #验证码识别
 def image_to_str(path):
     image = Image.open(path)
@@ -42,13 +47,15 @@ def login():
     file = open('vcode.jpg','wb')
     file.write(valcode.content)
     file.close()
+    
     vcode = image_to_str('vcode.jpg')
     '''
-    #手工输入验证码
-    #image = Image.open('vcode.jpg')
-    #image.show()
-    #vcode = input("VCODE:")
+    #手工输入验证码的模块，in case 你不想装pytesseract
+    image = Image.open('vcode.jpg')
+    image.show()
+    vcode = input("VCODE:")
     '''
+    
     print("尝试验证码：",vcode)
     
     #组装数据体
